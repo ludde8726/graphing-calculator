@@ -8,4 +8,4 @@
     * cons: not supported on all systems, can't use numpy, probably slower
 
 ## TODO:
-[ ] A lot
+* A lot
