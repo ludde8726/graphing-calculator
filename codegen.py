@@ -1,8 +1,10 @@
 import tempfile, subprocess, ctypes, pathlib
 
 class ClangProgram:
-  def __init__(self, code: str) -> None:
-    self.code = code
+  def __init__(self, code: str, use_temp: bool = True) -> None:
+    if not use_temp: self.code = code
+    self.code = f"""#include <math.h> 
+    void prg(float* x_coords, float* y_coords, float min_x, float max_x, float step) {{int num_points = round((max_x - min_x)/step) + 1;float x = min_x;for (int i = 0; i <= num_points; ++i) {{x_coords[i] = x;y_coords[i] = {code};x += step;}}}}"""
     self.compiled = None
     self.fxn = None
   
@@ -21,3 +23,4 @@ class ClangProgram:
       pathlib.Path(cached_file_path.name).write_bytes(self.compiled)
       self.fxn = ctypes.CDLL(str(cached_file_path.name))
       self.fxn.prg.argtypes = argtypes
+      self.fxn.prg(*bufs, *values)
